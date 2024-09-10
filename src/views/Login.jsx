@@ -1,5 +1,26 @@
+import axios from "axios";
+import { useState } from "react"
+
 export default function Login()
 {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const login = async () =>
+    {
+        const form = FormData();
+        form.append("email", email);
+        form.append("password", password);
+
+        await axios.post('http://tradiway.test/api/login',form)
+            .then((response)=>{
+                
+            });
+    }
+
+
     return (
         <>
             <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
