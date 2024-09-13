@@ -15,7 +15,7 @@ export default function Homepage()
             setLoading(true);
             // axios.defaults.headers.common['Accept'] = "application/json";
             // axios.defaults.headers.commonp['content-type'] ="application/json";
-            await axios.get("http://tradiway.test/api/plant")
+            await axios.get("http://tradiway.test/api/plants")
                 .then(response => {
                    
                     setPlants(response.data.data.plants);

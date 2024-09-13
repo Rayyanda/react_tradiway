@@ -1,7 +1,9 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import Api from "../api/index.jsx"
 
 
 function classNames(...classes) {
@@ -9,21 +11,61 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-  
+
+  // fungsi mengecek autentikasi
+  const [auth, setAuth] = useState();
+  const token = localStorage.getItem('token');
 
   const location = useLocation();
    
   const navigation = [
     { name: 'Home', href: '/'},
-    { name: 'Tumbuhan', href: '/plant'},
+    { name: 'Tumbuhan', href: '/plants'},
     { name: 'Minuman Herbal', href: '/drinks'},
     { name: 'Tentang', href: '#'},
   ]
   const [currentPage, setCurrentPage] = useState('/');
 
-  // useEffect(()=>{
+  // fungsi mengecek autentikasi
+  const getAuth = async () =>
+  {
+    try {
+      axios.defaults.headers.common['Accept'] = "application/json"
+      axios.defaults.headers.common['Content-Type'] = "application/json"
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      await axios.get('http://tradiway.test/api/user')
+        .then((response)=>{
+          //console.log(response.data);
+          if(response.status === "")
+          {
+            setAuth(false);
+          }else{
+            setAuth(true);
+          }
+        })
+    } catch (error) {
+      setAuth(false);
+    }
+      
+  }
 
-  // });
+  //fungsi handle logout
+  const logout = async () =>
+  {
+    axios.defaults.headers.common['Accept'] = "application/json"
+    axios.defaults.headers.common['Content-Type'] = "application/json"
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    await axios.post('http://tradiway.test/api/logout')
+      .then((response)=>{
+        //console.log(response.data);
+        localStorage.removeItem('token');
+        setAuth(false);
+    })
+  }
+
+  useEffect(()=>{
+    getAuth();
+  },[]);
 
 
   return (
@@ -57,66 +99,64 @@ export default function Navbar() {
                     className={
                       classNames(location.pathname === item.href ? "bg-amber-700 text-white" : "text-white hover:bg-amber-600 hover:text-white", "rounded-md px-3 py-2 text-sm font-medium")}>
                         {item.name}
-                      </Link>
-                  // <a
-                  //   key={item.name}
-                  //   href={item.href}
-                  //   onClick={()=> setCurrentPage(item.href)}
-                  //   //aria-current={currentPage === item.href ? 'page' : undefined}
-                  //   className={ location.pathname === item.href ? 'bg-amber-700 text-white rounded-md px-3 py-2 text-sm font-medium' : 'rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-amber-600 hover:text-white'}
-                  // >
-                  //   {item.name}
-                  // </a>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
           
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <button
-              type="button"
-              className="relative rounded-full bg-amber-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-amber-700"
-            >
-              <span className="absolute -inset-1.5" />
-              <span className="sr-only">View notifications</span>
-              <BellIcon aria-hidden="true" className="h-6 w-6" />
-            </button>
-
-            {/* Profile dropdown */}
-            <Menu as="div" className="relative ml-3">
-              <div>
-                <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    className="h-8 w-8 rounded-full"
-                  />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+          {auth ? (
+            <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <button
+                type="button"
+                className="relative rounded-full bg-amber-600 p-1 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-amber-700"
               >
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                    Your Profile
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                    Settings
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
-                    Sign out
-                  </a>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
-          </div>
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">View notifications</span>
+                <BellIcon aria-hidden="true" className="h-6 w-6" />
+              </button>
+
+              {/* Profile dropdown */}
+              <Menu as="div" className="relative ml-3">
+                <div>
+                  <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <span className="absolute -inset-1.5" />
+                    <span className="sr-only">Open user menu</span>
+                    <img
+                      alt=""
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      className="h-8 w-8 rounded-full"
+                    />
+                  </MenuButton>
+                </div>
+                <MenuItems
+                  transition
+                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                >
+                  <MenuItem>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                      Your Profile
+                    </a>
+                  </MenuItem>
+                  <MenuItem>
+                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                      Settings
+                    </a>
+                  </MenuItem>
+                  <MenuItem>
+                    <a href="#" onClick={()=> logout()} className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100">
+                      Sign out
+                    </a>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+            </div>
+            )
+            : 
+            <Link to={'/login'} className='rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-amber-600 hover:text-white'>
+              Login
+            </Link>
+          }
 
         </div>
       </div>

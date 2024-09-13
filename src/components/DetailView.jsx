@@ -9,43 +9,29 @@ export default function DetailView({image, name, description, latin_name, benefi
         <>
             <section className="py-8 bg-white md:py-16 dark:bg-gray-900 antialiased">
                 <div className="max-w-screen-xl px-4 mx-auto 2xl:px-0">
-                <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
-                    <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
-                    <img className="w-full dark:hidden" src={image} alt="" />
-                    <img className="w-full hidden dark:block" src={image} alt="" />
+                    <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
+                        <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
+                        <img className="w-full dark:hidden rounded" src={image} alt="" />
+                        <img className="w-full hidden dark:block rounded" src={image} alt="" />
                     </div>
 
                     <div className="mt-6 sm:mt-8 lg:mt-0">
-                    <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-                        {name}
-                    </h1>
-                    <p className="text-sm text-gray-500 sm:text-1xl dark:text-white">{latin_name}</p>
-                    <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
-                        <p
-                        className="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white"
-                        >
-                        $1,249.99
-                        </p>
-
-                        <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                        <div className="flex items-center gap-1">
-
-                            {/* sesuaikan rating, bisa di loop*/}
-                            <Star/>
-                            
-                        </div>
-                        <p
-                            className="text-sm font-medium leading-none text-gray-500 dark:text-gray-400"
-                        >
-                            (5.0)
-                        </p>
-                        <a
-                            href="#"
-                            className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white"
-                        >
-                            345 Reviews
-                        </a>
-                        </div>
+                        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">{name}</h1>
+                        <p className="text-sm text-gray-500 sm:text-1xl dark:text-white">{latin_name}</p>
+                        <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
+                            <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">$1,249.99</p>
+                            <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                                <div className="flex items-center gap-1">
+                                {/* sesuaikan rating, bisa di loop*/}
+                                <Star/>
+                                </div>
+                                <p className="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
+                                    (5.0)
+                                </p>
+                                <a href="#" className="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white">
+                                    345 Reviews
+                                </a>
+                            </div>
                     </div>
 
                     <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">

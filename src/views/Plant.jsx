@@ -16,7 +16,7 @@ export default function Plant()
     const [drinks, setDrinks] = useState([]);
 
     const getPlant = async () => {
-        await axios.get(`http://tradiway.test/api/plant/${slug}`)
+        await axios.get(`http://tradiway.test/api/plants/${slug}`)
             .then((response)=>{
                 //console.log(response.data.data);
                 setPlant(response.data.data.plant);

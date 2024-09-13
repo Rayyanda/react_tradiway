@@ -1,13 +1,14 @@
 import axios from "axios";
-import { useState,useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom";
-import Api from "../api/index"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
-export default function Login()
+export default function Registration()
 {
 
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passConfirm, setPassConfirm] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -20,40 +21,46 @@ export default function Login()
         }
     }
 
-    const login = async (e) =>
+
+    //fungsi register
+    const register = async () =>
     {
-        e.preventDefault();
-        setLoading(true)
-        const form = new FormData();
-        form.append("email", email);
-        form.append("password", password);
+        setLoading(true);
+        const formData = new FormData()
+        formData.append('name', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('password_confirmation', passConfirm);
 
-        try {
-            await Api.post('/login',form,{withCredentials:true})
-                .then((response)=>{
-                    console.log(response.data)
-                    if(response.data.success === true)
-                    {
-                        localStorage.setItem('token',response.data.token);
-                        navigator('/')
-                    }else{
-                        setError(response.data.message);
-                    }
-                });
-            setLoading(false);  
-        } catch (error) {
+        // axios.defaults.headers.common.Authorization = ""
+        // axios.defaults.headers.common.Accept = ""
+        await axios.post('http://tradiway.test/api/register', formData)
+            .then((response)=>{
+                console.log(response.data);
+                if(response.data.success === true)
+                {
+                    navigator('/');
+                }else{
+                    setError("Terjadi Kesalahan saat registrasi")
+                }
+            })
             setLoading(false);
-        }
     }
-
-    useEffect(()=>{
-        checkAuth()
+    
+    useState(()=>{
+        checkAuth();
     },[]);
+
 
     return (
         <>
             <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
                 <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
+                    <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
+                        <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
+                            style={{ backgroundImage : "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')" }}>
+                        </div>
+                    </div>
                     <div className="lg:w-1/2 xl:w-5/12 p-6 sm:p-12">
                         {/* <div>
                             <img src="https://storage.googleapis.com/devitary-image-host.appspot.com/15846435184459982716-LogoMakr_7POjrN.png"
@@ -61,7 +68,7 @@ export default function Login()
                         </div> */}
                         <div className="mt-12 flex flex-col items-center">
                             <h1 className="text-2xl xl:text-3xl font-extrabold">
-                                Sign in
+                                Sign up
                             </h1>
                             <div className="w-full flex-1 mt-8">
                                 {/* <div className="flex flex-col items-center">
@@ -110,41 +117,37 @@ export default function Login()
                                 </div> */}
 
                                 <div className="mx-auto max-w-xs">
-                                    <form method="post" onSubmit={(e)=> login(e)} >
-                                        <input onChange={(e)=> setEmail(e.target.value)}
-                                            className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
-                                            type="email" placeholder="Email" />
-                                        <input onChange={(e)=> setPassword(e.target.value)}
-                                            className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
-                                            type="password" placeholder="Password" />
-                                        <button type="submit"
-                                            className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
-                                            {/* <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
-                                                strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                                                <circle cx="8.5" cy="7" r="4" />
-                                                <path d="M20 8v6M23 11h-6" />
-                                            </svg> */}
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                                </svg>
-                                            {loading ? "Signing In" : (
-                                                <span className="ml-3">
-                                                    Sign In
-                                                </span>
-                                            )}
-                                        </button>
-
-                                    </form>
+                                    <input type="text" name="name" onChange={(e)=> setUsername(e.target.value)} id="username" placeholder="Username" className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white" />
+                                    <input onChange={(e)=> setEmail(e.target.value)}
+                                        className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                                        type="email" placeholder="Email" />
+                                    <input onChange={(e)=> setPassword(e.target.value)}
+                                        className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                                        type="password" placeholder="Password" />
+                                    <input type="password" placeholder="Password Confirmation" onChange={(e)=> setPassConfirm(e.target.value)}
+                                        name="password_confirmation" id="password_confirm" className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5" />
+                                    <button onClick={()=> register()}
+                                        className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                                        {
+                                            loading ? <div className="animate-spin inline-block w-5 h-5 border-4
+                                            border-gray-500 rounded-full"></div> : <div className="inline-block w-5 h
+                                            5 text-gray-500"></div>
+                                        }
+                                        <svg className="w-6 h-6 -ml-2" fill="none" stroke="currentColor" strokeWidth="2"
+                                            strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                                            <circle cx="8.5" cy="7" r="4" />
+                                            <path d="M20 8v6M23 11h-6" />
+                                        </svg>
+                                        <span className="ml-3">
+                                            Sign Up
+                                        </span>
+                                    </button>
                                     {error && (
-                                        <p>{error}</p>
+                                        <div className="text-red-500 text-center mt-5">
+                                            {error}
+                                        </div>
                                     )}
-                                    <p className="text-sm mt-2 text-indigo-500 text-start" >
-                                        Didn't have an account?
-                                        <Link to={'/register'} className="ml-1 border-b border-dotted border-indigo-500">
-                                            Register
-                                        </Link>
-                                    </p>
                                     <p className="mt-6 text-xs text-gray-600 text-center">
                                         I agree to abide by templatana's
                                         <a href="#" className="border-b border-gray-500 border-dotted">
@@ -159,13 +162,10 @@ export default function Login()
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 bg-indigo-100 text-center hidden lg:flex">
-                        <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat"
-                            style={{ backgroundImage : "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')" }}>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
+
         </>
     )
 }
