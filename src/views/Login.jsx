@@ -14,10 +14,14 @@ export default function Login()
     const navigator = useNavigate();
 
     const checkAuth = () =>{
-        if(localStorage.getItem('token') !== "")
-        {
-            navigator('/');
-        }
+        // if(localStorage.getItem('token') !== "")
+        // {
+        //     navigator('/');
+        // }
+        Api.get('/user')
+            .then((response)=>{
+                navigator('/');
+            })
     }
 
     const login = async (e) =>
@@ -29,12 +33,12 @@ export default function Login()
         form.append("password", password);
 
         try {
-            await Api.post('/login',form,{withCredentials:true})
+            await Api.post('/login',form)
                 .then((response)=>{
                     console.log(response.data)
                     if(response.data.success === true)
                     {
-                        localStorage.setItem('token',response.data.token);
+                        //localStorage.setItem('token',response.data.token);
                         navigator('/')
                     }else{
                         setError(response.data.message);

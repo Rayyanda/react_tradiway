@@ -14,7 +14,7 @@ export default function Navbar() {
 
   // fungsi mengecek autentikasi
   const [auth, setAuth] = useState();
-  const token = localStorage.getItem('token');
+  //const token = localStorage.getItem('token');
 
   const location = useLocation();
    
@@ -30,13 +30,13 @@ export default function Navbar() {
   const getAuth = async () =>
   {
     try {
-      axios.defaults.headers.common['Accept'] = "application/json"
-      axios.defaults.headers.common['Content-Type'] = "application/json"
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      await axios.get('http://tradiway.test/api/user')
+      // axios.defaults.headers.common['Accept'] = "application/json"
+      // axios.defaults.headers.common['Content-Type'] = "application/json"
+      // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      await Api.get('/user')
         .then((response)=>{
           //console.log(response.data);
-          if(response.status === "")
+          if(response.status === 200)
           {
             setAuth(false);
           }else{
@@ -52,13 +52,13 @@ export default function Navbar() {
   //fungsi handle logout
   const logout = async () =>
   {
-    axios.defaults.headers.common['Accept'] = "application/json"
-    axios.defaults.headers.common['Content-Type'] = "application/json"
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    await axios.post('http://tradiway.test/api/logout')
+    // axios.defaults.headers.common['Accept'] = "application/json"
+    // axios.defaults.headers.common['Content-Type'] = "application/json"
+    // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    await Api.post('/logout')
       .then((response)=>{
         //console.log(response.data);
-        localStorage.removeItem('token');
+        //localStorage.removeItem('token');
         setAuth(false);
     })
   }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import Api from "../api";
 
 export default function Registration()
 {
@@ -15,10 +16,14 @@ export default function Registration()
     const navigator = useNavigate();
 
     const checkAuth = () =>{
-        if(localStorage.getItem('token') !== "")
-        {
+        // if(localStorage.getItem('token') !== "")
+        // {
+        //     navigator('/');
+        // }
+        Api.get('/user')
+        .then((response)=>{
             navigator('/');
-        }
+        })
     }
 
 
@@ -34,12 +39,12 @@ export default function Registration()
 
         // axios.defaults.headers.common.Authorization = ""
         // axios.defaults.headers.common.Accept = ""
-        await axios.post('http://tradiway.test/api/register', formData)
+        await Api.post('/register', formData)
             .then((response)=>{
                 console.log(response.data);
                 if(response.data.success === true)
                 {
-                    navigator('/');
+                    navigator('/login');
                 }else{
                     setError("Terjadi Kesalahan saat registrasi")
                 }
